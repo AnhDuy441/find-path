@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 from Map import *
+from Algorithms import Astar
 
 
 # Lấy đường dẫn file input
@@ -82,6 +83,8 @@ if __name__ == "__main__":
     
     map = ReadFile(SelectFile())
     map.Draw()
+    
+    Astar.FindPath(map)
     
     running = True
     while running:

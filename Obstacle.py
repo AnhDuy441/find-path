@@ -9,12 +9,12 @@ class Obstacle:
         
         for i in range(len(points)):
             for j in range(i + 1, len(points)):
-                while(points[i].Distance(points[j]) != 0):
+                while(points[i].GetDistance(points[j]) != 0):
                     self.points.append(points[i])
                     points[i] = points[i].GoTo(points[j])
                 self.points.append(points[i])
         tempPoint = self.points[len(self.points) - 1]
-        while(self.points[0].Distance(tempPoint) != 0):
+        while(self.points[0].GetDistance(tempPoint) != 0):
                     tempPoint = tempPoint.GoTo(self.points[0])
                     self.points.append(tempPoint) 
 

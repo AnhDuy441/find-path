@@ -1,5 +1,4 @@
 from math import sqrt
-import pygame
 
 
 class Point:
@@ -8,13 +7,19 @@ class Point:
         self.y = y
         self.type = type  # start, end, pickup, obstacle
     
+    def __lt__(self, other):
+        # Define how to compare two Point instances
+        if self.x == other.x:
+            return self.y < other.y
+        return self.x < other.x
+    
     def GetCoordinates(self):
         return (self.x, self.y)
     
     def GetType(self):
         return self.type
         
-    def Distance(self, other):
+    def GetDistance(self, other):
         return sqrt(pow(self.x - other.x, 2) + pow(self.y - other.y, 2))
     
     def GoTo(self, other):
@@ -32,7 +37,7 @@ class Point:
         
         return newPoint
 
-    def IsAvailable(self, map, obs):
+    def IsAvailable(self, map):
         
         # Điểm nằm ngoài map
         if (self.x >= map.width or self.x < 0):
@@ -41,15 +46,23 @@ class Point:
             return False
         
         # Điểm trùng với chướng ngại vật
-        for ob in obs:
+        for ob in map.obstacles:
             for i in range (len(ob.points)):
                 if (self.GetCoordinates() == ob.points[i].GetCoordinates()):
                     return False
         
         return True
     
-    def GetSurroundingPoints(self):
-        surPoints = []
-        surPoints.append(self.x - 1, self.y - 1)
+    def GetNeighbor(self, map):
+        tempPoints = [Point() for _ in range(0)]
+        tempPoints.append(Point(self.x, self.y - 1, "neighbor"))
+        tempPoints.append(Point(self.x, self.y + 1, "neighbor"))
+        tempPoints.append(Point(self.x - 1, self.y, "neighbor"))
+        tempPoints.append(Point(self.x + 1, self.y, "neighbor"))
         
-        return surPoints
+        neighbor = [Point() for _ in range(0)]
+        for point in tempPoints:
+            if (point.IsAvailable(map)):
+                neighbor.append(point)
+                
+        return neighbor

@@ -4,7 +4,6 @@ from tkinter import filedialog
 from Map import *
 from Algorithms import Astar
 
-
 # Lấy đường dẫn file input
 def SelectFile():
     root = tk.Tk()
@@ -22,6 +21,7 @@ def SelectFile():
 def ReadFile(FilePath: str):
     try:
         with open(FilePath, 'r') as file:
+            map: Map
             points = [Point() for _ in range(0)]
             pickUpPoints = [Point() for _ in range(0)]
             obstacles = [Obstacle() for _ in range(0)]
@@ -84,10 +84,18 @@ if __name__ == "__main__":
     map = ReadFile(SelectFile())
     map.Draw()
     
-    Astar.FindPath(map)
+    path, cost, closed = Astar.findTheShortestPath(map)
+    if (path == None):
+        print("Không có đường đi")
+    else:
+        for i in range(len(path)):
+            pygame.draw.rect(map.screen, (128, 0, 128), (path[i].x * map.scale, path[i].y * map.scale, map.scale, map.scale))
+        # pygame.display.flip()  # Update display
+        print("Cost of path: ", cost)
     
+    map.Draw()
     running = True
-    while running:
+    while running: 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False   

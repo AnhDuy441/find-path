@@ -51,14 +51,25 @@ class Point:
                 if (self.GetCoordinates() == ob.points[i].GetCoordinates()):
                     return False
         
+        # Điểm trùng với các điểm đặc biệt
+        if (self.GetCoordinates() == map.start.GetCoordinates()):# or self.GetCoordinates() == map.end.GetCoordinates()):
+            return False
+        # for point in map.pickUps:
+        #     if (self.GetCoordinates() == point.GetCoordinates()):
+        #         return False
+        
         return True
     
     def GetNeighbor(self, map):
         tempPoints = [Point() for _ in range(0)]
+        tempPoints.append(Point(self.x - 1, self.y - 1, "neighbor"))
         tempPoints.append(Point(self.x, self.y - 1, "neighbor"))
-        tempPoints.append(Point(self.x, self.y + 1, "neighbor"))
+        tempPoints.append(Point(self.x + 1, self.y - 1, "neighbor"))
         tempPoints.append(Point(self.x - 1, self.y, "neighbor"))
         tempPoints.append(Point(self.x + 1, self.y, "neighbor"))
+        tempPoints.append(Point(self.x - 1, self.y + 1, "neighbor"))
+        tempPoints.append(Point(self.x, self.y + 1, "neighbor"))
+        tempPoints.append(Point(self.x + 1, self.y + 1, "neighbor"))
         
         neighbor = [Point() for _ in range(0)]
         for point in tempPoints:

@@ -37,3 +37,13 @@ class Map:
                     self.screen.set_at((x, y), (255, 255, 255))  # Đổi thành màu trắng
 
         pygame.display.flip()  # Update display
+
+
+    def get_all_points(self):
+            all_points = [Point(x, y, "normal") for x in range(self.width) for y in range(self.height)]
+
+            # Remove obstacle points
+            for obstacle in self.obstacles:
+                all_points = [point for point in all_points if point not in obstacle.points]
+
+            return all_points

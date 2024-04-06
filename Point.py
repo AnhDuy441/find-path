@@ -5,7 +5,7 @@ class Point:
     def __init__(self, x: int, y: int, type: str):
         self.x = x
         self.y = y
-        self.type = type  # start, end, pickup, obstacle
+        self.type = type  # start, end, pickup, obstacle,normal
     
     def __lt__(self, other):
         # Define how to compare two Point instances

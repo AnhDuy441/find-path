@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 from Map import *
-from Algorithms import Astar
+from Algorithms import Astar,Djikstra
 
 # Lấy đường dẫn file input
 def SelectFile():
@@ -84,13 +84,15 @@ if __name__ == "__main__":
     map = ReadFile(SelectFile())
     map.Draw()
     
-    path, cost, closed = Astar.findTheShortestPath(map)
+    #path, cost, closed = Astar.findTheShortestPath(map)
+    path, cost, closed = Djikstra.findTheShortestPath(map)
     if (path == None):
         print("Không có đường đi")
     else:
         for i in range(len(path)):
             pygame.draw.rect(map.screen, (128, 0, 128), (path[i].x * map.scale, path[i].y * map.scale, map.scale, map.scale))
-        # pygame.display.flip()  # Update display
+            # pygame.display.flip()  # Update display
+            # pygame.time.delay(300)
         print("Cost of path: ", cost)
     
     map.Draw()

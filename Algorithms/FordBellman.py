@@ -1,24 +1,42 @@
-from Point import Point
+from Map import Map, Point
 
-def initialize_single_source(graph, start):
-    distance = {}
-    predecessor = {}
-    for vertex in graph:
-        distance[vertex] = float('inf')
-        predecessor[vertex] = None
-    distance[start] = 0
-    return distance, predecessor
+def find_shortest_path(map: Map):
+    distances = {(x, y): float('inf') for x in range(map.width) for y in range(map.height)}
+    distances[(map.start.x, map.start.y)] = 0
 
-def relax(u, v, weight, distance, predecessor):
-    if distance[v] > distance[u] + weight:
-        distance[v] = distance[u] + weight
-        predecessor[v] = u
+    # Xóa các điểm là chướng ngại vật ra
+    for obstacle in map.obstacles:
+        for point in obstacle.points:
+            del distances[(point.x, point.y)]
 
-def bellman_ford(graph, start):
-    distance, predecessor = initialize_single_source(graph, start)
-    for _ in range(len(graph) - 1):
-        for u in graph:
-            for v in graph[u]:
-                weight = u.Distance(v)
-                relax(u, v, weight, distance, predecessor)
-    return distance, predecessor
+    # Duyệt qua các điểm lân cận và cập nhật khoảng cách nếu có đường đi ngắn hơn
+    for _ in range(map.height * map.width):
+        for x in range(map.width):
+            for y in range(map.height):
+                for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+                    neighbor_x, neighbor_y = x + dx, y + dy
+                    if (neighbor_x, neighbor_y) in distances and (neighbor_x, neighbor_y) not in {(point.x, point.y) for obstacle in map.obstacles for point in obstacle.points}:
+                        new_distance = distances.get((x, y), float('inf')) + Point(x, y, "").GetDistance(Point(neighbor_x, neighbor_y, ""))
+                        if new_distance < distances.get((neighbor_x, neighbor_y), float('inf')):
+                            distances[(neighbor_x, neighbor_y)] = new_distance
+
+    # Truy vết đường đi ngắn nhất từ start đến end
+    current_x, current_y = map.end.x, map.end.y
+    path = []
+    while (current_x, current_y) != (map.start.x, map.start.y):
+        path.append(Point(current_x, current_y, ""))
+        min_distance = float('inf')
+        min_x, min_y = current_x, current_y
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+            neighbor_x, neighbor_y = current_x + dx, current_y + dy
+            if (neighbor_x, neighbor_y) in distances:
+                if distances[(neighbor_x, neighbor_y)] < min_distance:
+                    min_distance = distances[(neighbor_x, neighbor_y)]
+                    min_x, min_y = neighbor_x, neighbor_y
+        current_x, current_y = min_x, min_y
+
+    # Đảo ngược mảng path để có thứ tự từ start đến end
+    path.reverse()
+
+    # Trả về mảng path và distances
+    return path, distances[(map.end.x, map.end.y)]

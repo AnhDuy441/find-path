@@ -1,9 +1,8 @@
 import os
 import tkinter as tk
 from tkinter import filedialog
-import pygame
 from Map import *
-from Algorithms.FordBellman import bellman_ford
+from Algorithms import Astar, FordBellman
 
 # Lấy đường dẫn file input
 def SelectFile():
@@ -22,6 +21,7 @@ def SelectFile():
 def ReadFile(FilePath: str):
     try:
         with open(FilePath, 'r') as file:
+            map: Map
             points = [Point() for _ in range(0)]
             pickUpPoints = [Point() for _ in range(0)]
             obstacles = [Obstacle() for _ in range(0)]
@@ -78,41 +78,34 @@ def ReadFile(FilePath: str):
         print("Đã xảy ra lỗi:", e)
 
 if __name__ == "__main__":
+    
     os.system('cls')
+    
     map = ReadFile(SelectFile())
     map.Draw()
     
-    graph = {}
-    for point in map.pickUps + [map.start, map.end]:
-        graph[point] = []
+    # path, cost, closed = Astar.findTheShortestPath(map)
+    # if (path == None):
+    #     print("Không có đường đi")
+    # else:
+    #     for i in range(len(path)):
+    #         pygame.draw.rect(map.screen, (128, 0, 128), (path[i].x * map.scale, path[i].y * map.scale, map.scale, map.scale))
+    #     # pygame.display.flip()  # Update display
+    #     print("Cost of path: ", cost)
 
-    for point in map.pickUps + [map.start, map.end]:
-        for other_point in map.pickUps + [map.start, map.end]:
-            if point != other_point:
-                if point.IsAvailable(map, map.obstacles) and other_point.IsAvailable(map, map.obstacles):
-                    graph[point].append(other_point)
-
-    distances, predecessors = bellman_ford(graph, map.start)
-
-    end = map.end
-    path_coordinates = []
-    while end is not None:
-        path_coordinates.append((end.x, end.y))
-        end = predecessors[end]
-    path_coordinates.reverse()
-    print("Đường đi ngắn nhất từ start đến end:", path_coordinates)
-
-    total_distance = 0
-    for i in range(len(path_coordinates) - 1):
-        current_point = path_coordinates[i]
-        next_point = path_coordinates[i + 1]
-        total_distance += Point(current_point[0], current_point[1], "").Distance(Point(next_point[0], next_point[1], ""))
-
-    print("Độ dài của đường đi:", total_distance)
-
+    path_fordbellman, cost_fordbellman = FordBellman.find_shortest_path(map)
+    # print(path_fordbellman)
+    if path_fordbellman:
+        for i in range(len(path_fordbellman)):
+            pygame.draw.rect(map.screen, (0, 255, 255), (path_fordbellman[i].x * map.scale, path_fordbellman[i].y * map.scale, map.scale, map.scale))
+        print("Cost of path (Ford-Bellman): ", cost_fordbellman)
+    else:
+        print("Không có đường đi")
+    
+    map.Draw()
     running = True
-    while running:
+    while running: 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False   
-    pygame.quit()   
+    pygame.quit()    

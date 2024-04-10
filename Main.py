@@ -1,8 +1,9 @@
 import os
+import sys
 import tkinter as tk
 from tkinter import filedialog
 from Map import *
-from Algorithms import Astar,Djikstra
+from Algorithms import Astar,Dijkstra
 
 # Lấy đường dẫn file input
 def SelectFile():
@@ -77,6 +78,34 @@ def ReadFile(FilePath: str):
     except Exception as e:
         print("Đã xảy ra lỗi:", e)
 
+# Tạo cửa sổ nhận yêu cầu
+def Menu():
+    # Tạo cửa sổ
+    window = tk.Toplevel()
+    window.title("Tìm đường đi ngắn nhất")
+    window.geometry("300x200")  # Thiết lập kích thước cửa sổ
+
+    numbers = [0, 1]
+    selectedValue = int(0)  # Biến để lưu trữ giá trị số đã chọn
+    
+    def HandleChoice(choice):
+        nonlocal selectedValue
+        selectedValue = choice
+        window.destroy()  # Đóng cửa sổ sau khi chọn
+    
+    buttonText = []
+    buttonText.append("Thuật toán Dijkstra")
+    buttonText.append("Thuật toán A star")
+    
+    # Tạo ô nhập liệu
+    for number in numbers:
+        button = tk.Button(window, text=buttonText[number], command=lambda num=number: HandleChoice(num), width=15, height=2, font=("Arial", 12))
+        button.pack(pady=5)
+
+    # Hiển thị cửa sổ và chờ người dùng nhập giá trị
+    window.wait_window(window)
+    return selectedValue
+
 if __name__ == "__main__":
     
     os.system('cls')
@@ -84,21 +113,23 @@ if __name__ == "__main__":
     map = ReadFile(SelectFile())
     map.Draw()
     
-    #path, cost, closed = Astar.findTheShortestPath(map)
-    path, cost, closed = Djikstra.findTheShortestPath(map)
+    method = Menu()
+    if method == 0:
+        path, cost, closed = Dijkstra.findTheShortestPath(map)
+    elif method == 1:
+        path, cost, closed = Astar.findTheShortestPath(map)
+    
     if (path == None):
         print("Không có đường đi")
     else:
         for i in range(len(path)):
             pygame.draw.rect(map.screen, (128, 0, 128), (path[i].x * map.scale, path[i].y * map.scale, map.scale, map.scale))
-            # pygame.display.flip()  # Update display
-            # pygame.time.delay(300)
-        print("Cost of path: ", cost)
+        print("Chi phí đường đi: ", cost)
     
     map.Draw()
     running = True
     while running: 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False   
-    pygame.quit()    
+                running = False
+    pygame.quit()

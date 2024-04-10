@@ -5,12 +5,12 @@ from tkinter import filedialog
 from Map import *
 from Algorithms import Astar,Dijkstra
 
-# Lấy đường dẫn file input
+# Get the path of the input file
 def SelectFile():
     root = tk.Tk()
-    root.withdraw()  # Ẩn cửa sổ gốc của tkinter
+    root.withdraw()   # Hide the root window of tkinter
 
-    filePath = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])  # Chọn file txt
+    filePath = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])  # Select txt file
     if filePath:
         print("Đường dẫn file đã chọn:", filePath)
         return filePath        
@@ -18,7 +18,7 @@ def SelectFile():
         print("Không có file nào được chọn.")
         return "Null"
 
-# Lấy dữ liệu từ file
+# Get data from file
 def ReadFile(FilePath: str):
     try:
         with open(FilePath, 'r') as file:
@@ -27,11 +27,11 @@ def ReadFile(FilePath: str):
             pickUpPoints = [Point() for _ in range(0)]
             obstacles = [Obstacle() for _ in range(0)]
             
-            firstLine = file.readline().strip()  # Đọc dòng đầu tiên (kích thước bản đồ)
-            MapSize = [int(x) for x in firstLine.split(',')]  # Chuyển đổi các phần từ chuỗi sang số nguyên
+            firstLine = file.readline().strip()  # Read the first line (map size)
+            MapSize = [int(x) for x in firstLine.split(',')]  # Convert string elements to integers
             
             
-            secondLine = file.readline().strip()  # Đọc dòng thứ hai (các điểm S, G, điểm đón)
+            secondLine = file.readline().strip() # Read the second line (S, G points, pick-up points)
             pointsNumbers = [int(x) for x in secondLine.split(',')]
             k = 0
             for i in range(int(len(pointsNumbers)/2)):
@@ -52,15 +52,15 @@ def ReadFile(FilePath: str):
                 if (point.GetType() == "pickup"):
                     pickUpPoints.append(point)
             
-            thirdLine = file.readline().strip()  # Đọc dòng thứ 3 (số lượng chướng ngại vật)
+            thirdLine = file.readline().strip()  # Read the third line (number of obstacles)
             obstacleAmount = int(thirdLine)
-            for i in range(obstacleAmount):  # Mỗi lần lặp đọc 1 dòng chứa các điểm của chướng ngại vật
+            for i in range(obstacleAmount):  # Each loop reads a line containing the points of the obstacle
                 obPoints = [Point() for _ in range(0)]
                 tempStr = file.readline().strip()
                 pointsNumbersPerObstacle = [int(x) for x in tempStr.split(',')]
                 j = 0
                 k = 0
-                for j in range(int(len(pointsNumbersPerObstacle)/2)):  # Mỗi lần lặp đọc 1 điểm của chướng ngại vật
+                for j in range(int(len(pointsNumbersPerObstacle)/2)): # Each loop reads a point of the obstacle
                     a = k
                     k += 1
                     b = k
@@ -78,31 +78,31 @@ def ReadFile(FilePath: str):
     except Exception as e:
         print("Đã xảy ra lỗi:", e)
 
-# Tạo cửa sổ nhận yêu cầu
+# Create a window to receive requests
 def Menu():
-    # Tạo cửa sổ
+    # Create a window
     window = tk.Toplevel()
     window.title("Tìm đường đi ngắn nhất")
-    window.geometry("300x200")  # Thiết lập kích thước cửa sổ
+    window.geometry("300x200")  # Set window size
 
     numbers = [0, 1]
-    selectedValue = int(0)  # Biến để lưu trữ giá trị số đã chọn
+    selectedValue = int(0)  # Variable to store the selected number value
     
     def HandleChoice(choice):
         nonlocal selectedValue
         selectedValue = choice
-        window.destroy()  # Đóng cửa sổ sau khi chọn
+        window.destroy()  # Close the window after selection
     
     buttonText = []
     buttonText.append("Thuật toán Dijkstra")
     buttonText.append("Thuật toán A star")
     
-    # Tạo ô nhập liệu
+    # Create input box
     for number in numbers:
         button = tk.Button(window, text=buttonText[number], command=lambda num=number: HandleChoice(num), width=15, height=2, font=("Arial", 12))
         button.pack(pady=5)
 
-    # Hiển thị cửa sổ và chờ người dùng nhập giá trị
+    # Display the window and wait for the user to enter a value
     window.wait_window(window)
     return selectedValue
 

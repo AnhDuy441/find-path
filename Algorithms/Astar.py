@@ -4,13 +4,13 @@ from itertools import permutations
 from Map import *
 
 def findTheShortestPath(map: Map):
-    perms = permutations(map.pickUps)  # Chỉnh hợp của tập các pick up points {[p1, p2,...],   [p2, p1,...],   [p1, p1,...],...}
+    perms = permutations(map.pickUps)  # Permutations of the set of pick up points {[p1, p2,...], [p2, p1,...], [p1, p1,...],...}
     perms = [( *perm, map.end) for perm in perms]
     shortestPath = [Point() for _ in range(0)]
     shortestClosed = [Point() for _ in range(0)]
     minCost = math.inf
     
-    for points in perms:  # Tập các pick up points có thứ tự ngẫu nhiên [p1, p2,...]
+    for points in perms:  # Set of pick up points in random order [p1, p2,...]
         map.Draw()
         tempPath = [Point() for _ in range(0)]
         tempClosed = [Point() for _ in range(0)]

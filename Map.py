@@ -33,8 +33,8 @@ class Map:
         for x in range(self.width * self.scale):
             for y in range(self.height * self.scale):
                 color = self.screen.get_at((x, y))
-                if color == (0, 0, 0):  # Nếu pixel có màu đen, xám
-                    self.screen.set_at((x, y), (255, 255, 255))  # Đổi thành màu trắng
+                if color == (0, 0, 0):  # If the pixel is black or gray
+                    self.screen.set_at((x, y), (255, 255, 255))  # Change color to white
 
         pygame.display.flip()  # Update display
 

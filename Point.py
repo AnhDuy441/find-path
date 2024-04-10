@@ -39,19 +39,19 @@ class Point:
 
     def IsAvailable(self, map):
         
-        # Điểm nằm ngoài map
+        # Point is outside the map
         if (self.x >= map.width or self.x < 0):
             return False
         if (self.y >= map.height or self.y < 0):
             return False
         
-        # Điểm trùng với chướng ngại vật
+        # Point is on an obstacle
         for ob in map.obstacles:
             for i in range (len(ob.points)):
                 if (self.GetCoordinates() == ob.points[i].GetCoordinates()):
                     return False
         
-        # Điểm trùng với các điểm đặc biệt
+        # Point is on a special point
         if (self.GetCoordinates() == map.start.GetCoordinates()):# or self.GetCoordinates() == map.end.GetCoordinates()):
             return False
         # for point in map.pickUps:

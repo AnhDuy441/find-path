@@ -18,14 +18,14 @@ class Obstacle:
         while(self.points[0].GetDistance(endPoint) != 0):
                     endPoint = endPoint.GoTo(self.points[0])
                     self.points.append(endPoint)
-        # Xóa các điểm bị lặp lại
+        # Delete the duplicate points
         for i in range(len(self.points) - 2):
             for j in range(i + 1, len(self.points) - 1):
                 if self.points[i].GetCoordinates() == self.points[j].GetCoordinates():
                     self.points.remove(self.points[j])
         self.points.pop()
         
-        # Điểm trên cùng và dưới cùng của vật cản
+        # Topmost and bottommost points of the obstacle
         top = self.points[0]
         for point in self.points:
             if (top.y >= point.y):
@@ -61,16 +61,16 @@ def contain(points: list[Point], checkPoint: Point):
     return False
                 
 def orientation(p: Point, q: Point, r: Point):
-# Hàm tính hướng của ba điểm
+# Function to find the orientation of three points
     val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
     if val == 0:
-        return 0  # Các điểm thẳng hàng
-    return 1 if val > 0 else 2  # Cùng chiều kim đồng hồ
+        return 0  # Points are colinear
+    return 1 if val > 0 else 2  # Clockwise orientation
 
 def ConvexHull(points: list[Point]):
     n = len(points)
     if n < 3:
-        return []  # Không đủ điểm để tạo ra đa giác lồi
+        return []  # Not enough points to create a convex hull
 
     hull = []
     l = 0

@@ -27,8 +27,10 @@ def find_path(map: Map, start: Point, end: Point):
                             distances[(neighbor_x, neighbor_y)] = new_distance
 
     current_x, current_y = end.x, end.y
+    i = 0
     # Truy vết đường đi ngắn nhất từ start đến end
     while (current_x, current_y) != (start.x, start.y):
+        i += 1
         path.append(Point(current_x, current_y, ""))
         min_distance = float('inf')
         min_x, min_y = current_x, current_y
@@ -40,10 +42,14 @@ def find_path(map: Map, start: Point, end: Point):
                     min_distance = distances[(neighbor_x, neighbor_y)]
                     min_x, min_y = neighbor_x, neighbor_y
         current_x, current_y = min_x, min_y
+        if i == 100:
+            CLOSED.clear()
+            break
+
     path.reverse()
     drawClosed(map, CLOSED)
 
-    return path, distances[(end.x, end.y)]
+    return path, distances[(end.x, end.y)], Point(current_x, current_y, "")
 
 def find_shortest_path(map: Map):
     path = []
@@ -53,10 +59,15 @@ def find_shortest_path(map: Map):
     n = len(map.pickUps)
     for i in range(n):
         end = map.pickUps[i]
-        new_path, new_distance = find_path(map, start, end)
-        path = path + new_path
-        total += new_distance
-        start = end
+        new_path, new_distance, cur = find_path(map, start, end)
+        if (cur.x, cur.y) != (start.x, start.y):
+            path.clear()
+            total = float("inf")
+            break
+        else:
+            path = path + new_path
+            total += new_distance
+            start = end
 
     return path, total
 

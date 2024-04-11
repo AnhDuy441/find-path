@@ -28,7 +28,7 @@ def find_path(map: Map, start: Point, end: Point):
 
     current_x, current_y = end.x, end.y
     i = 0
-    # Truy vết đường đi ngắn nhất từ start đến end
+    # Trace the shortest path from start to end
     while (current_x, current_y) != (start.x, start.y):
         i += 1
         path.append(Point(current_x, current_y, ""))
@@ -71,7 +71,6 @@ def find_shortest_path(map: Map):
 
     return path, total
 
-
 def drawClosed(map: Map, CLOSED: list[Point]):
     for i in range(len(CLOSED)):
         if CLOSED[i].GetCoordinates() != map.start.GetCoordinates() and CLOSED[i].GetCoordinates() != map.end.GetCoordinates():
@@ -83,7 +82,6 @@ def drawClosed(map: Map, CLOSED: list[Point]):
             if check == False:
                 pygame.draw.rect(map.screen, (128, 128, 128), (CLOSED[i].x * map.scale, CLOSED[i].y * map.scale, map.scale, map.scale))
     pygame.display.flip()  # Update display
-
 
 def Bellman_ford(map: Map):
     return find_shortest_path(map)

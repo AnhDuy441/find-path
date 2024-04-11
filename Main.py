@@ -3,7 +3,7 @@ import sys
 import tkinter as tk
 from tkinter import filedialog
 from Map import *
-from Algorithms import Astar,Dijkstra
+from Algorithms import Astar, Bellman_ford, Dijkstra
 
 # Get the path of the input file
 def SelectFile():
@@ -85,7 +85,7 @@ def Menu():
     window.title("Tìm đường đi ngắn nhất")
     window.geometry("300x200")  # Set window size
 
-    numbers = [0, 1]
+    numbers = [0, 1, 2]
     selectedValue = int(0)  # Variable to store the selected number value
     
     def HandleChoice(choice):
@@ -96,10 +96,11 @@ def Menu():
     buttonText = []
     buttonText.append("Thuật toán Dijkstra")
     buttonText.append("Thuật toán A star")
-    
+    buttonText.append("Thuật toán Bellman-Ford")
+
     # Create input box
     for number in numbers:
-        button = tk.Button(window, text=buttonText[number], command=lambda num=number: HandleChoice(num), width=15, height=2, font=("Arial", 12))
+        button = tk.Button(window, text=buttonText[number], command=lambda num=number: HandleChoice(num), width=25, height=2, font=("Arial", 12))
         button.pack(pady=5)
 
     # Display the window and wait for the user to enter a value
@@ -118,6 +119,8 @@ if __name__ == "__main__":
         path, cost, closed = Dijkstra.findTheShortestPath(map)
     elif method == 1:
         path, cost, closed = Astar.findTheShortestPath(map)
+    elif method == 2:
+        path, cost = Bellman_ford.Bellman_ford(map)
     
     if (path == None):
         print("Không có đường đi")

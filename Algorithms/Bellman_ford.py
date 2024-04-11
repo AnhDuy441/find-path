@@ -1,4 +1,5 @@
 import pygame
+import heapq
 from Map import Map, Point
 
 def find_path(map: Map, start: Point, end: Point):
@@ -7,24 +8,30 @@ def find_path(map: Map, start: Point, end: Point):
     path = []
     CLOSED = []
 
+    open_set = []
+    heapq.heappush(open_set, (0, start))
+
     for obstacle in map.obstacles:
         for point in obstacle.points:
             del distances[(point.x, point.y)]
 
-    for _ in range(map.height * map.width):
-        for x in range(map.width):
-            for y in range(map.height):
-                for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
-                    neighbor_x, neighbor_y = x + dx, y + dy
-                    if (neighbor_x, neighbor_y) in distances and (neighbor_x, neighbor_y) not in {(point.x, point.y)
-                                                                                                  for obstacle in
-                                                                                                  map.obstacles for
-                                                                                                  point in
-                                                                                                  obstacle.points}:
-                        new_distance = distances.get((x, y), float('inf')) + Point(x, y, "").GetDistance(
-                            Point(neighbor_x, neighbor_y, ""))
-                        if new_distance < distances.get((neighbor_x, neighbor_y), float('inf')):
-                            distances[(neighbor_x, neighbor_y)] = new_distance
+    while open_set:
+        current = heapq.heappop(open_set)[1]
+        CLOSED.append(current)
+
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+            neighbor_x, neighbor_y = current.x + dx, current.y + dy
+            if (neighbor_x, neighbor_y) in distances and (neighbor_x, neighbor_y) not in {(point.x, point.y)
+                                                                                          for obstacle in
+                                                                                          map.obstacles for
+                                                                                          point in
+                                                                                          obstacle.points}:
+                new_distance = distances.get((current.x, current.y), float('inf')) + Point(current.x, current.y,
+                                                                                           "").GetDistance(
+                    Point(neighbor_x, neighbor_y, ""))
+                if new_distance < distances.get((neighbor_x, neighbor_y), float('inf')):
+                    distances[(neighbor_x, neighbor_y)] = new_distance
+                    heapq.heappush(open_set, (distances[(neighbor_x, neighbor_y)], Point(neighbor_x, neighbor_y, "")))
 
     current_x, current_y = end.x, end.y
     i = 0
